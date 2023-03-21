@@ -1,4 +1,5 @@
-﻿using NZWalks_Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using NZWalks_Api.Data;
 using NZWalks_Api.Models.Domains;
 
 namespace NZWalks_Api.Repositories
@@ -13,10 +14,45 @@ namespace NZWalks_Api.Repositories
         {
             this.nzwalksdbcontext = nzwalksdbcontext;
         }
-        public IEnumerable<Region> GetAll()
+        /*public IEnumerable<Region> GetAll()
         {
             return nzwalksdbcontext.Regions.ToList();
-        }
+        }*/
         //Now we will inject this interface and the implementation into these services again using dependency injection.
+        //to asynchronous
+        public async Task<IEnumerable<Region>> GetAllAsync()
+        {
+            return await nzwalksdbcontext.Regions.ToListAsync();
+        }
+
+        //to get region by id
+        public async Task<Region> GetAsync(Guid id)
+        {
+            return await nzwalksdbcontext.Regions.FirstOrDefaultAsync(x => x.Id == id);//if it finds return that region otherwise null value
+        }
+
+        //to add new Region
+        public async Task<Region> AddRegionAsync(Region region)
+        {
+            region.Id = Guid.NewGuid();//api overrides the id value set by the client
+            await nzwalksdbcontext.AddAsync(region);//add it to context
+            await nzwalksdbcontext.SaveChangesAsync();
+            return region;
+        }
+        //to delete a region
+        public async Task<Region> DeleteRegionAsync(Guid id)
+        {
+            //check if region exists
+            var region=await nzwalksdbcontext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+           if (region == null)
+            {
+                return null;
+            }
+            //delete the region
+
+            nzwalksdbcontext.Regions.Remove(region);
+            await nzwalksdbcontext.SaveChangesAsync();
+            return region;
+        }
     }
 }
