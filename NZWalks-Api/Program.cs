@@ -21,6 +21,9 @@ builder.Services.AddScoped<IRegionRepository, RegionRepository>();//we will tell
                                                                   //because we have injected this now into the services, we can use this region repository, implement implement
                                                                   //ation inside the controller.
 
+//register IWalkRepository to services
+builder.Services.AddScoped<IWalkRepository, WalkRepository>();
+
 //We have to inject these profiles into our services.
 builder.Services.AddAutoMapper(typeof(Program).Assembly);//And this takes an assembly so that it uses that assembly name to scan all the profiles using this profile class.
                                                          //so we specify the assembly there.

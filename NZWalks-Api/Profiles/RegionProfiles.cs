@@ -10,7 +10,8 @@ namespace NZWalks_Api.Profiles
         {
             //We have to inject these profiles into our solution.
             //inside the constructor we will create maps for our models.
-            CreateMap<Models.Domains.Region, Models.DTOs.Region>();//And this way when we specified this automobile is smart enough to look at both the properties and look at
+            CreateMap<Models.Domains.Region, Models.DTOs.Region>()
+                .ReverseMap();//And this way when we specified this automobile is smart enough to look at both the properties and look at
                                                                    //the names of those properties and map the data from one domain model to the other, from the source  to the
                       //destination.
          /*

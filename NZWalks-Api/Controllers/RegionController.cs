@@ -18,7 +18,7 @@ namespace NZWalks_Api.Controllers
 
         //So I will create a constructor and here I will inject the Iregionrepository interface.And when I do that ASP.net core is smart enough that it will give me the
         //implementation of the regionrepository class.
-        public RegionController(IRegionRepository regionrepository,IMapper mapper)//created mapper to use automapper
+        public RegionController(IRegionRepository regionrepository, IMapper mapper)//created mapper to use automapper
         {
             this.regionrepository = regionrepository;
             this.mapper = mapper;
@@ -67,7 +67,7 @@ namespace NZWalks_Api.Controllers
         public async Task<IActionResult> GetRegionAsync(Guid Id)
         {
             var regions = await regionrepository.GetAsync(Id);
-            if(regions == null)
+            if (regions == null)
             {
                 return NotFound();
             }
@@ -93,7 +93,7 @@ namespace NZWalks_Api.Controllers
 
             //pass details to Repository
 
-            var regions=await regionrepository.AddRegionAsync(region);
+            var regions = await regionrepository.AddRegionAsync(region);
             //convert back to DTO
             var regionDTOs = new Models.DTOs.Region
             {
@@ -103,13 +103,13 @@ namespace NZWalks_Api.Controllers
                 Area = regions.Area,
                 Latitude = regions.Latitude,
                 Longitude = regions.Longitude,
-                Population =regions.Population
+                Population = regions.Population
             };
 
             //as part of the HTTP post create method, because this is creating a resource, we don't usually pass the the ok object back.Instead we pass a createdataction back.
             //So this this gives an HTTP 201 status back to the client.Which means that looking at the 201, the client knows that the the save was successful and the new
             //resource has been created in the database.So I will use the createdataction method and it needs an action name where this resource could be found.
-            return CreatedAtAction(nameof(GetRegionAsync)/*same as "GetRegionAsync"*/, new {id=regionDTOs.Id},regionDTOs);
+            return CreatedAtAction(nameof(GetRegionAsync)/*same as "GetRegionAsync"*/, new { id = regionDTOs.Id }, regionDTOs);
             //action name    parameter for that action name       response
         }
 
@@ -120,7 +120,7 @@ namespace NZWalks_Api.Controllers
         public async Task<IActionResult> DeleteRegionAsync(Guid id)
         {
             //get region from database
-            var region =  await regionrepository.DeleteRegionAsync(id);
+            var region = await regionrepository.DeleteRegionAsync(id);
             //if null NotFound
             if (region == null)
             {
@@ -131,6 +131,48 @@ namespace NZWalks_Api.Controllers
             //return Ok response
             return Ok(regionDTOs);
         }
+
+        //to update a region
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id, [FromBody] UpdateRegionRequest updateregion)//to make clear id is coming from route and model 
+        {                                                                                                                   //data is coming grom body
+            //convert updateregion(DTO) to domain model Region
+            var region = new Models.Domains.Region
+            {
+                Code = updateregion.Code,
+                Name = updateregion.Name,
+                Area = updateregion.Area,
+                Latitude = updateregion.Latitude,
+                Longitude = updateregion.Longitude,
+                Population = updateregion.Population
+            };
+
+            //update region using Repository
+
+            var regions = await regionrepository.UpdateRegionAsync(id,region);
+
+            //if null Not Found
+            if (regions == null)
+            {
+                return NotFound();
+            }
+            //convert back to DTO
+            var regionDTOs = new Models.DTOs.Region
+            {
+                Id = regions.Id,
+                Code = regions.Code,
+                Name = regions.Name,
+                Area = regions.Area,
+                Latitude = regions.Latitude,
+                Longitude = regions.Longitude,
+                Population = regions.Population
+            };
+            // return ok response
+            return Ok(regionDTOs);
+        }
+
+
 
     }
 }
