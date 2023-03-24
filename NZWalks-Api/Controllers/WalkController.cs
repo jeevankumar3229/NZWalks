@@ -13,11 +13,15 @@ namespace NZWalks_Api.Controllers
     {
         private readonly IWalkRepository walkrepository;
         private readonly IMapper mapper;
+        private readonly IRegionRepository regionRepository;
+        private readonly IwalkDifficultyRepository iwalkDifficultyRepository;
 
-        public WalkController(IWalkRepository walkrepository,IMapper mapper)
+        public WalkController(IWalkRepository walkrepository,IMapper mapper,IRegionRepository regionRepository,IwalkDifficultyRepository iwalkDifficultyRepository)
         {
             this.walkrepository = walkrepository;
             this.mapper = mapper;
+            this.regionRepository = regionRepository;
+            this.iwalkDifficultyRepository = iwalkDifficultyRepository;
         }
         
         [HttpGet]
@@ -59,6 +63,11 @@ namespace NZWalks_Api.Controllers
         [ValidateModels]//action attribute
         public async Task<IActionResult> AddWalkAsync([FromBody] AddNewWalk NewWalk)
         {
+            //creating validation method
+            if (! await validatewalk(NewWalk))
+            {
+                return BadRequest(ModelState);
+            }
            /* if (ModelState.IsValid)
             {*/
                 //convert newwalk to domain model walk
@@ -101,6 +110,10 @@ namespace NZWalks_Api.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> UpdateWalkAsync(Guid id,UpdateWalk updatewalk)
         {
+            if (! await validatewalk(updatewalk))
+            {
+                return BadRequest(ModelState);
+            }
            /* if (ModelState.IsValid) implicit validation
             {*/
                 //convert to domain model walk
@@ -156,6 +169,56 @@ namespace NZWalks_Api.Controllers
             return Ok(walks);
     
         }
-        
+
+        //validating RegionId and WalkDifficultyId in Addwalk 
+        private async Task<bool> validatewalk(AddNewWalk NewWalk)
+        {
+            if (NewWalk == null)
+            {
+                ModelState.AddModelError(nameof(NewWalk), $"cannot be null");
+                return false;
+            }
+            if (await regionRepository.GetAsync(NewWalk.RegionId)==null)
+                {
+                    ModelState.AddModelError(nameof(NewWalk.RegionId), $" enter a valid RegionId");
+                    
+                } 
+            if (await iwalkDifficultyRepository.GetWalkDiffById(NewWalk.WalkDifficultyId)==null)
+            {
+                ModelState.AddModelError(nameof(NewWalk.WalkDifficultyId), $"enter a valid WalkDifficultyId");
+                
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //validating RegionId and WalkDifficultyId in updatewalk 
+        private async Task<bool> validatewalk(UpdateWalk updatewalk)
+        {
+            if (updatewalk == null)
+            {
+                ModelState.AddModelError(nameof(updatewalk), $"cannot be null");
+                return false;
+            }
+            if (await regionRepository.GetAsync(updatewalk.RegionId) == null)
+            {
+                ModelState.AddModelError(nameof(updatewalk.RegionId), $"enter a valid RegionId");
+                
+            }
+            if (await iwalkDifficultyRepository.GetWalkDiffById(updatewalk.WalkDifficultyId) == null)
+            {
+                ModelState.AddModelError(nameof(updatewalk.WalkDifficultyId), $"enter a valid WalkDifficultyId");
+                
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
     }
 }

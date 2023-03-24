@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks_Api.CustomActionFilters;
 using NZWalks_Api.Models.DTOs;
 using NZWalks_Api.Repositories;
 
@@ -41,6 +42,7 @@ namespace NZWalks_Api.Controllers
         }
 
         [HttpPost]
+        [ValidateModels]
         public async Task<IActionResult> AddWalkDiffAsync([FromBody] AddWalkDiffRequest walkDiffRequest)
         {
             var walkDiffModel = new Models.Domains.WalkDifficulty
@@ -55,6 +57,7 @@ namespace NZWalks_Api.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModels]
         public async Task<IActionResult> UpdateWalkDiff([FromRoute] Guid id, [FromBody] UpdateWalkDiffRequest updateWalkDiffRequest)
         {
             var walkDiffModel = new Models.Domains.WalkDifficulty
