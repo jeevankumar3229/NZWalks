@@ -26,7 +26,7 @@ namespace NZWalks_Api.Repositories
         }
 
         //to get region by id
-        public async Task<Region> GetAsync(Guid id)
+        public async Task<Region?> GetAsync(Guid id)
         {
             return await nzwalksdbcontext.Regions.FirstOrDefaultAsync(x => x.Id == id);//if it finds return that region otherwise null value
         }
@@ -40,7 +40,7 @@ namespace NZWalks_Api.Repositories
             return region;
         }
         //to delete a region
-        public async Task<Region> DeleteRegionAsync(Guid id)
+        public async Task<Region?> DeleteRegionAsync(Guid id)
         {
             //check if region exists
             var region=await nzwalksdbcontext.Regions.FirstOrDefaultAsync(x => x.Id == id);
@@ -55,7 +55,7 @@ namespace NZWalks_Api.Repositories
             return region;
         }
         //to update a region
-        public async Task<Region> UpdateRegionAsync(Guid id, Region region)
+        public async Task<Region?> UpdateRegionAsync(Guid id, Region region)
         {
             var regions = await nzwalksdbcontext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (region == null)
@@ -64,10 +64,8 @@ namespace NZWalks_Api.Repositories
             }
             regions.Code = region.Code;
             regions.Name = region.Name;
-            regions.Area = region.Area;
-            regions.Latitude = region.Latitude;
-            regions.Longitude = region.Longitude;
-            regions.Population = region.Population;
+            regions.RegionImageURL = region.RegionImageURL;
+            
             await nzwalksdbcontext.SaveChangesAsync();
 
             return regions;

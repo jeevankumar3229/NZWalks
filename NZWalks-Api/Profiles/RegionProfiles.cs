@@ -18,7 +18,8 @@ namespace NZWalks_Api.Profiles
             //And if the names are not similar, we have to define a map for it to understand, to make sure automapper  understands this is the mapping for us.
              //So if the names were not correct or not matching between the two models, we would have specified it like this.
             CreateMap<Models.Domains.Region, Models.DTOs.Region>()
-                .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id));
+                .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id))
+                .ReverseMap();
          */
          //can also perform reverseMap
         }

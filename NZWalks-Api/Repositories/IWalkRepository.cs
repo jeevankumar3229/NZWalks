@@ -4,9 +4,9 @@ namespace NZWalks_Api.Repositories
 {
     public interface IWalkRepository
     {
-        Task<IEnumerable<Walk>> GetAllWalksAsync();
+        Task<IEnumerable<Walk>> GetAllWalksAsync(string? filteron=null, string? filterquery=null,string? sortby=null,bool IsAscending=true,int pageno=1,int pagesize=1000);//by default null because everytime you do not need to filter
 
-        Task<Walk> GetWalkById(Guid id);
+        Task<Walk?> GetWalkById(Guid id);
 
         Task<Walk> AddWalkAsync(Walk walk);
 

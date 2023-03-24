@@ -10,13 +10,7 @@ namespace NZWalks_Api.Models.Domains
 
         public string Name { get; set; }
 
-        public double Area { get; set; }
-
-        public double Latitude { get; set; }
-
-        public double Longitude { get; set; }
-
-        public long Population { get; set; }
+        public string? RegionImageURL { get; set; }
 
         //Navigation property- relationship between classes
         //one region can have multiple walks

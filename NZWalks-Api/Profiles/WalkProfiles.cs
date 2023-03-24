@@ -6,7 +6,7 @@ namespace NZWalks_Api.Profiles
     {
         public WalkProfiles()
         {
-            CreateMap<Models.Domains.Region, Models.DTOs.Walk>()
+            CreateMap<Models.Domains.Walk, Models.DTOs.Walk>()
                 .ReverseMap();
 
             //we can create separate profile for WalkDifficulty
