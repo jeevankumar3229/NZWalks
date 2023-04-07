@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,37 @@ builder.Services.AddSwaggerGen(options =>
     }) ;
    
 });
+
+//or
+/*builder.Services.AddSwaggerGen(options =>
+{
+    var securityscheme = new OpenApiSecurityScheme
+    {
+        Name="JWT Authentication",
+        Description="Enter a valid JWT token",
+        In=ParameterLocation.Header,
+        Type=SecuritySchemeType.Http,
+        Scheme="bearer",
+        BearerFormat="JWT",
+        Reference=new OpenApiReference
+        {
+            Id=JwtBearerDefaults.AuthenticationScheme,
+            Type=ReferenceType.SecurityScheme
+        }
+
+
+    };
+    options.AddSecurityDefinition(securityscheme.Reference.Id, securityscheme);
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {securityscheme,new string[] {} }
+    });
+});*/
+
+
+
+//inject fluent validations
+builder.Services.AddFluentValidation(options=>options.RegisterValidatorsFromAssemblyContaining<Program>());//so add it can scan on this assembly
 
 //when using two dbcontext class we get error ,change in each constructor dbcontextoptions to dbcontextoptions<dbcontextclassname>
 //when running migrations we need to specift dbcontext class by ....... -Context "dbcontextclassname"

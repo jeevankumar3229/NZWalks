@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks_Api.CustomActionFilters;
 using NZWalks_Api.Models.DTOs;
 using NZWalks_Api.Repositories;
+using System.Data;
 
 namespace NZWalks_Api.Controllers
 {
@@ -19,6 +21,7 @@ namespace NZWalks_Api.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAllWalkDiffAsync()
         {
             var walkDiff=await iwalkDifficultyRepository.GetWalkDiffAsync();
@@ -30,6 +33,7 @@ namespace NZWalks_Api.Controllers
         [HttpGet]
         [Route("{id:Guid}")]
         [ActionName("walkDifficulty")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetWalkDiffById(Guid id)
         {
             var walkDiff=await iwalkDifficultyRepository.GetWalkDiffById(id);
@@ -42,7 +46,8 @@ namespace NZWalks_Api.Controllers
         }
 
         [HttpPost]
-        [ValidateModels]
+        [ValidateModels] //used for validation using customactionfilters 
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddWalkDiffAsync([FromBody] AddWalkDiffRequest walkDiffRequest)
         {
             var walkDiffModel = new Models.Domains.WalkDifficulty
@@ -58,6 +63,7 @@ namespace NZWalks_Api.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModels]
+        [Authorize(Roles = "WRITER")]
         public async Task<IActionResult> UpdateWalkDiff([FromRoute] Guid id, [FromBody] UpdateWalkDiffRequest updateWalkDiffRequest)
         {
             var walkDiffModel = new Models.Domains.WalkDifficulty
@@ -75,7 +81,7 @@ namespace NZWalks_Api.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteWalkDiffAsync(Guid id)
         {
             var walkDiff = await iwalkDifficultyRepository.DeleteWalkDiffAsync(id);

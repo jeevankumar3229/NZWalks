@@ -5,7 +5,7 @@ namespace NZWalks_Api.Models.DTOs
     public class LoginRequestDTO
     {
         [Required]
-        [DataType(DataType.Password)]//since we want username as emailaddress
+        [DataType(DataType.EmailAddress)]//since we want username as emailaddress
         public string Username { get; set; }
 
         [Required]

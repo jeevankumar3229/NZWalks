@@ -16,7 +16,7 @@ namespace NZWalks_Api.Controllers
     [Route("[Controller]")]
     //So we will make use of the authorize attribute to block unauthenticated users.
     //So as an attribute, I will say authorize and this comes from Microsoft.ASP.NETCore.authorization
-   // [Authorize]
+   //[Authorize]
     public class RegionController : Controller
     {
         private readonly IRegionRepository regionrepository;
@@ -54,7 +54,7 @@ namespace NZWalks_Api.Controllers
             return Ok(regionDTOs);
         }*/
         //to asynchronous
-        [Authorize(Roles ="Reader")]
+      [Authorize(Roles ="Reader,Writer")]
        
         public async Task<IActionResult> GetAllRegionsAsync()
         {
@@ -69,7 +69,7 @@ namespace NZWalks_Api.Controllers
         [HttpGet]
         [Route("{Id:Guid}")]//only allows to take guid value
         [ActionName("GetRegionAsync")]//used for createdataction
-        [Authorize(Roles = "Reader")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetRegionAsync(Guid Id)
         {
             var regions = await regionrepository.GetAsync(Id);
@@ -84,8 +84,8 @@ namespace NZWalks_Api.Controllers
 
         //to add new Region
         [HttpPost]
-        [ValidateModels]//add this to perform explicit validation
-        [Authorize(Roles = "Writer")]
+        //[ValidateModels]//add this to perform explicit validation using custom action filter
+       [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest addnewregion)
         {
             //So now that we have defined the validations that we want on these properties of this model, we can come back to the region controller where we have the
@@ -131,7 +131,7 @@ namespace NZWalks_Api.Controllers
         //to delete a region
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+       [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteRegionAsync(Guid id)
         {
             //get region from database

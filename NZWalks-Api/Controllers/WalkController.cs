@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks_Api.CustomActionFilters;
 using NZWalks_Api.Models.Domains;
 using NZWalks_Api.Models.DTOs;
 using NZWalks_Api.Repositories;
+using System.Data;
 
 namespace NZWalks_Api.Controllers
 {
@@ -25,6 +27,7 @@ namespace NZWalks_Api.Controllers
         }
         
         [HttpGet]
+        [Authorize(Roles = "Reader,Writer")]
         //.................FILTERING...........................and -----SORTING-----------and/////////PAGINATION////////////////////////
         //htt...../Region/filterOn=Name&filterQuery=value&sortby=name&isascending=true&pageno=1&pagesize=10   here filterOn represents the column to filter and filterQuery represents the
         //value of given column to filter and sortby represents the column to sort and isascending indicates ascending or not.pageno and page size is used for pagination.
@@ -46,6 +49,7 @@ namespace NZWalks_Api.Controllers
         [HttpGet]
         [Route("{id:Guid}")]
         [ActionName("GetWalkById")]
+        [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetWalkById(Guid id)
         {
             var walk = await walkrepository.GetWalkById(id);
@@ -61,6 +65,7 @@ namespace NZWalks_Api.Controllers
         //add a new walk
         [HttpPost]
         [ValidateModels]//action attribute
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> AddWalkAsync([FromBody] AddNewWalk NewWalk)
         {
             //creating validation method
@@ -108,6 +113,7 @@ namespace NZWalks_Api.Controllers
         [HttpPut]
         [ValidateModels]//add this for explicit validation
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateWalkAsync(Guid id,UpdateWalk updatewalk)
         {
             if (! await validatewalk(updatewalk))
@@ -157,6 +163,7 @@ namespace NZWalks_Api.Controllers
         //delete a walk
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteWalkAsync(Guid id)
         {
             var walk =await  walkrepository.DeleteWalkAsync(id);

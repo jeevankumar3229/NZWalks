@@ -32,7 +32,7 @@ namespace NZWalks_Api.Repositories
 
             var token = new JwtSecurityToken(
 
-                configurations["JWT:Issuer"],
+                configurations["JWT:issuer"],
                 configurations["JWT:Audience"],
                 claims,
                 expires:DateTime.Now.AddMinutes(15),
